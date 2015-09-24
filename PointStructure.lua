@@ -59,7 +59,7 @@ local function export (points, start, filename)
 	for index, value in pairs(points) do
 		local transitions = value.Transition
 		for _, value in pairs(transitions) do
-			f:write(value .. "\t")
+			f:write(value)
 		end
 		f:write("\n")
 	end
@@ -77,7 +77,6 @@ local function clone (points)
 	if inputType == "table" then	-- a node of the graph
 		copy = {}
 		for key, value in next, points, nil do
-			--print(key, value)
 			copy[clone(key)] = clone(value)
 		end
 	else							-- a coordinate or a destination
