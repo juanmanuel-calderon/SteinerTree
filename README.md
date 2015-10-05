@@ -9,9 +9,11 @@ A couple of solution are given in SteinerBudget.lua.
 Note: algorithms 2bis and 3bis are only useful for the file input.points that is in the project as it adds specific edges. For the more general solutions see algorithms 2 and 3.
 
 Usage:
-  lua main.lua input (budget house)
+  > lua main.lua input (budget house)
   
 where,
   input is the file defining the points (one point each line, two coordinates par point separated by a space)
+  
   budget (optional) is the maximum budget for the second problem (if now specified, the budget solutions won't be calculated)
+  
   house (optional, only if budget is present) the number of the point used as house for the budget problem. 
