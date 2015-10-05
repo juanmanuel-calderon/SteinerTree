@@ -1,10 +1,5 @@
 --[[
 	This file contains a couple of useful functions used in the rest of the program.
-	Currently it contains:
-		1. readFile (filename)
-		2. split (input, sep)
-		3. tlength (input)
-		4. distance (a, b)
 ]]--
 local Utility = {}
 
@@ -25,7 +20,7 @@ Utility.readFile = readFile
 -- in: sep = the separator (can be a string)
 -- out: a list containing the tokens
 local function splitString (input, sep)
-	local result={}
+	local result = {}
         for match in string.gmatch(input, "([^"..sep.."]+)") do
                 table.insert(result, match)
         end
@@ -45,16 +40,38 @@ local function tlength (input)
 end
 Utility.tlength = tlength
 
--- Gives the distance between two points
--- The distance is defined by sqrt( (bx-ax)^2 + (by-ay)^2 )
--- in: a = the first point
--- in: b = the second point
--- out: the distance between a and b
-local function distance (a, b)
-	local dx = b.x - a.x
-	local dy = b.y - a.x
-	return math.sqrt(dx*dx + dy*dy)
+-- Shifts an array by one to the left
+-- in: input = the array to shift
+-- pos: the initial position to shift
+local function shift1Left (input, pos)
+	local length = tlength(input)
+	for i = pos, length do
+		input[i] = input[i+1]
+	end
 end
-Utility.distance = distance
+Utility.shift1Left = shift1Left
+
+-- Shifts an array by one to the right
+-- in: input = the array to shift
+-- pos: the initial position to shift
+local function shift1Right (input, pos)
+	local length = tlength(input)
+	for i = length, pos, -1 do
+		input[i+1] = input[i]
+	end
+	input[pos] = nil
+end
+Utility.shift1Right = shift1Right
+
+-- Merges two tables
+-- in: tab1 = the destination
+-- in: tab2 = the other table
+-- out: tab1 has the elements of tab2
+local function merge (tab1, tab2)
+	for k,v in pairs(tab2) do
+		table.insert(tab1, v)
+	end
+end
+Utility.merge = merge
 
 return Utility

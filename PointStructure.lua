@@ -21,6 +21,7 @@
 ]]--
 local PointStructure = {}
 local Utility = require("Utility")
+local MathFunc = require("MathFunc")
 
 -- 	Generates the point structure from a string describing the coordinates of the points
 --	There are no transitions initially
@@ -29,7 +30,7 @@ local Utility = require("Utility")
 local function create (pointString)
 	local structure = {}
 	local pointList = Utility.splitString(pointString, "\n")
-	for index,point in pairs(pointList) do
+	for index, point in pairs(pointList) do
 		local coords = Utility.splitString(point, " ")
 		local p = {}
 		local structureField = {}
@@ -77,7 +78,6 @@ local function clone (points)
 	if inputType == "table" then	-- a node of the graph
 		copy = {}
 		for key, value in next, points, nil do
-			--print(key, value)
 			copy[clone(key)] = clone(value)
 		end
 	else							-- a coordinate or a destination
@@ -86,5 +86,93 @@ local function clone (points)
 	return copy
 end
 PointStructure.clone = clone
+
+-- Finds the parents of a given point p
+-- in: points = the structure
+-- in: p = the point to find the parents
+-- out: a table with the indexes of the parents of p
+local function findParents (points, p)
+	local parents = {}
+	for i = 1, Utility.tlength(points) do
+		for _, child in pairs(points[i].Transition) do
+			if(child == p) then
+				table.insert(parents, i)
+			end
+		end
+	end
+
+	return parents
+end
+PointStructure.findParents = findParents
+
+-- Finds the orphan points (the ones without parents)
+-- in: points = the structure
+-- out: a table with the indexes of the orphan points
+local function findOrphans (points)
+	local result = {}
+	for k, v in pairs(points) do
+		if(Utility.tlength(findParents(points, k)) == 0 and (Utility.tlength(v.Transition) > 0)) then
+			table.insert(result, k)
+		end
+	end
+
+	return result
+end
+PointStructure.findOrphans = findOrphans
+
+-- Finds the points with no childs
+-- in: points
+-- out: a table with indexes of the points with no child
+local function findNoChild (points)
+	local result = {}
+	for k, v in pairs(points) do
+		if(Utility.tlength(v.Transition) == 0) then
+			table.insert(result, k)
+		end
+	end
+
+	return result
+end
+PointStructure.findNoChild = findNoChild
+
+-- Swaps a transition a->b to b->a
+-- in: a, b = the points whose transition we need to swap
+-- in: idxA = the index of A
+local function swapTransition (a, b, idxA)
+	Utility.shift1 (a.Transition)
+	local nbTransition = Utility.tlength(b.Transition)
+	b.Transition[nbTransition + 1] = idxA
+end
+PointStructure.swapTransition = swapTransition
+
+-- Prints the structure
+-- in: points = the structure
+local function toString (points)
+	for i, point in pairs(points) do
+		print(i, point.Point.x, point.Point.y)
+		for j, transition in pairs(point.Transition) do
+			print(transition)
+		end
+	end
+	print("")
+end
+PointStructure.toString = toString
+
+-- Gives a score to the current structure
+-- The score is defined by the sum of the length of all the transitions
+-- in: points = the point structure
+-- out: the score for this structure
+local function score (points)
+	local score = 0
+	for _, p in pairs(points) do
+		local startPoint = p.Point
+		for _, t in pairs(p.Transition) do
+			local endPoint = points[t].Point
+			score = score + MathFunc.distance(startPoint, endPoint)
+		end
+	end
+	return score
+end
+PointStructure.score = score
 
 return PointStructure
