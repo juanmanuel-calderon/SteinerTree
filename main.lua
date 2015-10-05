@@ -7,7 +7,7 @@ local Utility = require("Utility")
 local PointStructure = require("PointStructure")
 local Algorithm = require("Algorithm")
 
-if(Utility.tlength(arg) ~= 2) then
+if(Utility.tlength(arg) ~= 4) then
 	print("Usage = inputfile outputfile")
 else
 	INPUT_FILE = arg[1]

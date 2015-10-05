@@ -52,7 +52,7 @@ Utility.tlength = tlength
 -- out: the distance between a and b
 local function distance (a, b)
 	local dx = b.x - a.x
-	local dy = b.y - a.x
+	local dy = b.y - a.y
 	return math.sqrt(dx*dx + dy*dy)
 end
 Utility.distance = distance
